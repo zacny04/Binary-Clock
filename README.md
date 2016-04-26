@@ -2,7 +2,7 @@
 Binary Clock for arduino nano with RTC DS1307 
 
 Created by:
-Bartosz Żurek
+Bartosz Żurek,
 Patryk Kuś
 04.2016
 
