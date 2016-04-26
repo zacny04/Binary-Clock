@@ -91,6 +91,7 @@ void loop() {
       if(mButtonState==HIGH) {
         now.setMinute(now.Minute() + 1);
         now.setSecond(0);
+        s = now.Second();
       Rtc.SetDateTime(now);
       Serial.println("Minute++ "+(String)m);
       }
