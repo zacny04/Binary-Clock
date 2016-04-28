@@ -78,8 +78,9 @@ void loop() {
     if(hButtonState != hLastState) {
       if(hButtonState==HIGH) {
         now.setHour(now.Hour() + 1);
-      Rtc.SetDateTime(now);
-      Serial.println("Hours++ "+(String)h);
+        Rtc.SetDateTime(now);
+        h = now.Hour();
+        Serial.println("Hours++ "+(String)h);
       }
       hLastState = hButtonState;
       delay(5);
@@ -91,6 +92,7 @@ void loop() {
       if(mButtonState==HIGH) {
         now.setMinute(now.Minute() + 1);
         now.setSecond(0);
+        n = now.Minute();
         s = now.Second();
       Rtc.SetDateTime(now);
       Serial.println("Minute++ "+(String)m);
