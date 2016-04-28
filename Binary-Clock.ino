@@ -49,6 +49,10 @@ void setup() {
   Serial.println("start rtc");
   Rtc.Begin();
   //obiekt z data i godzina
+  if (!Rtc.GetIsRunning()) {
+    Serial.println("RTC nieaktywne, startuje");
+    Rtc.SetIsRunning(true);
+  }
   RtcDateTime boot = Rtc.GetDateTime();
   time = millis();
   s = boot.Second();
