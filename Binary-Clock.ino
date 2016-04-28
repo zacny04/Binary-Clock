@@ -1,6 +1,5 @@
 #include <RtcDateTime.h>
 #include <RtcDS1307.h>
-//#include <RtcTemperature.h>
 #include <RtcUtility.h>
 
 #define A 6
@@ -77,7 +76,6 @@ void loop() {
   }
 
   while (time + 1000 > millis()) {
-    
     int hButtonState = digitalRead(H);
     if(hButtonState != hLastState) {
       if(hButtonState==HIGH) {
@@ -98,8 +96,8 @@ void loop() {
         now.setSecond(0);
         m = now.Minute();
         s = now.Second();
-      Rtc.SetDateTime(now);
-      Serial.println("Minute++ "+(String)m);
+        Rtc.SetDateTime(now);
+        Serial.println("Minute++ "+(String)m);
       }
       mLastState = mButtonState;
       delay(5);
@@ -127,5 +125,5 @@ void loop() {
     m = now.Minute();
     h = now.Hour();
   }
-   if(h == 24) h=0;
+  if(h == 24) h=0;
 }
