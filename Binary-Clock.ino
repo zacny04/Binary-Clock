@@ -126,6 +126,6 @@ void loop() {
     s = now.Second();
     m = now.Minute();
     h = now.Hour();
-    if(h == 24) h=0;
   }
+   if(h == 24) h=0;
 }
