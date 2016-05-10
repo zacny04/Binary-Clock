@@ -1,3 +1,6 @@
+/*
+setHour() and setMinute() require changes in Rtc library, they have to be added .
+*/
 #include <RtcDateTime.h>
 #include <RtcDS1307.h>
 #include <RtcUtility.h>
@@ -10,9 +13,8 @@
 #define H 7
 #define M 8
 
-/* Create an rtc ds1307 related object */
 RtcDS1307 Rtc;
-long unsigned time = millis();
+
 byte Array[6][4][2] {
   {{A, B}, {B, A}},
   {{C, A}, {A, C}, {B, C}, {C, B}},
@@ -21,9 +23,10 @@ byte Array[6][4][2] {
   {{E, A}, {B, D}, {D, B}},
   {{C, E}, {E, C}, {B, E}, {E, B}}
 };
-byte arrayBinary[6][4];
+bool arrayBinary[6][4];
 byte s = 0, m = 0, h = 0;
 int hLastState = 0, mLastState=0;
+long unsigned time = millis();
 /************************************/
 void toBin(int a, int j) {
   int i = 0;
@@ -39,43 +42,37 @@ void toBin(int a, int j) {
 }
 
 void setup() {
-  pinMode(A, INPUT);
-  pinMode(B, INPUT);
-  pinMode(C, INPUT);
-  pinMode(D, INPUT);
-  pinMode(E, INPUT);
+  for(int i=E;i<=A;i++)
+    pinMode(i, INPUT);
   Serial.begin(9600);
   Serial.println("start rtc");
   Rtc.Begin();
-  //obiekt z data i godzina
   if (!Rtc.GetIsRunning()) {
     Serial.println("RTC nieaktywne, startuje");
     Rtc.SetIsRunning(true);
   }
+  //date & time object
   RtcDateTime boot = Rtc.GetDateTime();
   time = millis();
   s = boot.Second();
   m = boot.Minute();
   h = boot.Hour();
-  String temp = "H: " + (String)h + " M: " + (String)m + " s: " + (String)s;
-  Serial.println(temp);
+  String startTime = "H: " + (String)h + " M: " 
+                   + (String)m + " s: " + (String)s;
+  Serial.println(startTime);
 }
 
 void loop() {
   RtcDateTime now = Rtc.GetDateTime();
 
-  int pom[6];
-  pom[0] = h / 10;
-  pom[1] = h % 10;
-  pom[2] = m / 10;
-  pom[3] = m % 10;
-  pom[4] = s / 10;
-  pom[5] = s % 10;
+  int pom[6] = { h/10, h%10, m/10,
+                 m%10, s/10, s%10 };
   for (int i = 0; i < 6; i++) {
     toBin(pom[i], i);
   }
 
   while (time + 1000 > millis()) {
+    
     int hButtonState = digitalRead(H);
     if(hButtonState != hLastState) {
       if(hButtonState==HIGH) {
@@ -106,16 +103,18 @@ void loop() {
     
     for (int i = 0; i < 6; i++)
       for (int j = 0; j < 4; j++) {
-        if (arrayBinary[i][j] == 1) {
+        if (arrayBinary[i][j]) {
           pinMode(Array[i][j][0], OUTPUT);
           pinMode(Array[i][j][1], OUTPUT);
           digitalWrite(Array[i][j][0], HIGH);
+          //led workaround
           if (i % 2 == 0)
             delay(0.9);
           pinMode(Array[i][j][0], INPUT);
           pinMode(Array[i][j][1], INPUT);
         }
       }
+    
   }
   
   if(time + 1000 <= millis()) {
